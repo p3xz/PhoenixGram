@@ -1,0 +1,27 @@
+{
+    "SPKUtils: Bool Pref": {
+		"prefix": "spkbool",
+		"body": [
+            "if ([SPKUtils getBoolPref:@\"${1:key}\"]) $0"
+		]
+	},
+    "SPKUtils: String Pref": {
+		"prefix": "spkstring",
+		"body": [
+            "if ([[SPKUtils getStringPref:@\"${1:key}\"] isEqualToString:@\"${2:string}\"]) $0"
+		]
+	},
+
+	"SPKUtils: Log": {
+		"prefix": "spklog",
+		"body": [
+            "SPKLog($0);"
+		]
+	},
+	"SPKUtils: Log Id": {
+		"prefix": "spklogid",
+		"body": [
+            "SPKLogId(@\"${1:prefix}\", $0);"
+		]
+	}
+}
