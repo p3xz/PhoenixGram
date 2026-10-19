@@ -72,7 +72,7 @@ static NSArray *SPKInstantsSettingsSections(void) {
                                        icon:SPKSettingsIcon(SPKActionButtonOpenMenuIconName())
                                 defaultsKey:@"instants_camera_btn"],
         ],
-                        @"Adds a Sparkle button to the Instants camera view to upload a photo from Photos, Files, or Gallery, and to browse the Instants you have saved."),
+                        @"Adds a PhoenixGram button to the Instants camera view to upload a photo from Photos, Files, or Gallery, and to browse the Instants you have saved."),
         SPKTopicSection(@"Confirmation", @[
             ({
                 SPKSetting *s = [SPKSetting switchCellWithTitle:@"Confirm Instant Capture"

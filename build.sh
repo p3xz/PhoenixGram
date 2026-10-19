@@ -262,8 +262,8 @@ inject_custom_icons() {
 
     # Copy precompiled @2x PNGs and create @3x copies (required for modern iPhones)
     cp "$ROOT_DIR/resources/sparkle_icons"/*.png "$app_dir/"
-    for f in "$app_dir"/sparkle*@2x.png; do
-        cp "$f" "${f/@2x/@3x}"
+    for f in "$app_dir"/*@2x.png; do
+        [ -f "$f" ] && cp -n "$f" "${f/@2x/@3x}" 2>/dev/null || true
     done
 
     local plist="$app_dir/Info.plist"
@@ -292,14 +292,14 @@ inject_custom_icons() {
     "$pb" -c "Add :CFBundleIcons~ipad dict" "$plist" 2>/dev/null || true
     "$pb" -c "Add :CFBundleIcons~ipad:CFBundleAlternateIcons dict" "$plist" 2>/dev/null || true
 
-    for icon in sparkle sparkle-dark sparkle-neutral; do
+    for icon in phoenixgram phoenixgram-dark phoenixgram-neutral sparkle sparkle-dark sparkle-neutral; do
         spk_add_alt_icon "CFBundleIcons" "$icon" \
             "${icon}60x60@2x" "${icon}60x60@3x"
         spk_add_alt_icon "CFBundleIcons~ipad" "$icon" \
             "${icon}60x60@2x" "${icon}60x60@3x" "${icon}76x76@2x" "${icon}76x76@3x"
     done
 
-    echo '  Added 3 Sparkle alternate icon entries to Info.plist'
+    echo '  Added PhoenixGram and Sparkle alternate icon entries to Info.plist'
 
     rm -f "$output_ipa"
     (

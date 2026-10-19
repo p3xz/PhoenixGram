@@ -24,7 +24,7 @@
         ],
                         @"Consider donating to support the tweak's development."),
         SPKTopicSection(@"Information", @[
-            [SPKSetting staticCellWithTitle:@"Sparkle"
+            [SPKSetting staticCellWithTitle:@"PhoenixGram"
                                    subtitle:SPKVersionString
                                        icon:SPKSettingsIcon(@"action")],
             [SPKSetting staticCellWithTitle:@"Instagram"
@@ -35,27 +35,16 @@
                                        icon:SPKSettingsIcon(@"key")]
         ],
                         nil),
-        SPKTopicSection(@"", @[
-            [SPKSetting linkCellWithTitle:@"waffle"
-                                 subtitle:@"Sparkle developer"
+        SPKTopicSection(@"Upstream", @[
+            [SPKSetting linkCellWithTitle:@"Sparkle for Instagram"
+                                 subtitle:@"Base project by waffle (efibalogh)"
                                  imageUrl:@"https://avatars.githubusercontent.com/u/117626247?v=4"
-                                      url:@"https://github.com/efibalogh"],
-            [SPKSetting linkCellWithTitle:@"View Source Code"
-                                 subtitle:@"Tap to open on GitHub"
-                                 imageUrl:@"https://i.imgur.com/BBUNzeP.png"
                                       url:@"https://github.com/efibalogh/sparkle-ig"]
-        ],
-                        nil),
-        SPKTopicSection(@"Community", @[
-            [SPKSetting linkCellWithTitle:@"Telegram Channel"
-                                 subtitle:@"Join the community for updates and support"
-                                 imageUrl:@"https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/960px-Telegram_logo.svg.png"
-                                      url:@"https://t.me/sparkle_ig"]
         ],
                         nil),
         SPKTopicSection(@"Credits", @[
             [SPKSetting linkCellWithTitle:@"SoCuul • SCInsta"
-                                 subtitle:@"Base project Sparkle is built on"
+                                 subtitle:@"Base project Sparkle was built on"
                                  imageUrl:@"https://i.imgur.com/c9CbytZ.png"
                                       url:@"https://github.com/SoCuul/SCInsta"],
             [SPKSetting linkCellWithTitle:@"Ryuk • RyukGram"

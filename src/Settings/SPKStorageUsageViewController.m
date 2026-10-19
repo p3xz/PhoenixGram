@@ -44,7 +44,7 @@
                                         subtitle:[self formattedKey:@"total"]
                                             icon:SPKSettingsIcon(@"info")],
               ],
-                                        @"On-device storage used by all Sparkle data. Instagram's own cache is not included.")];
+                                        @"On-device storage used by all PhoenixGram data. Instagram's own cache is not included.")];
 
     [sections addObject:SPKTopicSection(@"Breakdown", @[
                   [SPKSetting valueCellWithTitle:@"Gallery"
@@ -75,7 +75,7 @@
     clearAvatars.iconTintColor = [SPKUtils SPKColor_InstagramDestructive];
 
     [sections addObject:SPKTopicSection(@"Profile Pictures", @[ clearAvatars ],
-                                        @"Profile pictures are a shared cache reused across Sparkle. Clearing them frees space; they re-download as needed.")];
+                                        @"Profile pictures are a shared cache reused across PhoenixGram. Clearing them frees space; they re-download as needed.")];
 
     [self replaceSections:sections];
 }

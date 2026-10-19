@@ -79,9 +79,9 @@ void SPKStabilityGuardPresentSafeModeAlertIfNeeded(void) {
     SPKLog(@"Stability", @"Presenting safe startup alert (reason: %@)", reason);
 
     [SPKIGAlertPresenter presentAlertFromViewController:nil
-                                                 title:@"Sparkle Safe Mode"
-                                               message:@"Instagram closed before finishing launch several times in a row, so Sparkle turned its features off to get you back into the app.\n\n"
-                                                        "Every Sparkle feature is disabled right now. Only Sparkle Settings is reachable. Turn Safe Mode off to enable them again."
+                                                 title:@"PhoenixGram Safe Mode"
+                                               message:@"Instagram closed before finishing launch several times in a row, so PhoenixGram turned its features off to get you back into the app.\n\n"
+                                                        "Every PhoenixGram feature is disabled right now. Only PhoenixGram Settings is reachable. Turn Safe Mode off to enable them again."
                                                actions:@[
                                                    [SPKIGAlertAction actionWithTitle:@"Turn Off Safe Mode"
                                                                                style:SPKIGAlertActionStyleDefault
@@ -89,7 +89,7 @@ void SPKStabilityGuardPresentSafeModeAlertIfNeeded(void) {
                                                                                  SPKStabilityGuardReset();
                                                                                  [SPKUtils showRestartConfirmation];
                                                                              }],
-                                                   [SPKIGAlertAction actionWithTitle:@"Open Sparkle Settings"
+                                                   [SPKIGAlertAction actionWithTitle:@"Open PhoenixGram Settings"
                                                                                style:SPKIGAlertActionStyleDefault
                                                                              handler:^{
                                                                                  [SPKUtils showSettingsForTopicTitle:@"Tools"];

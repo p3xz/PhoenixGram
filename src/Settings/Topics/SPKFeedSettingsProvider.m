@@ -40,14 +40,14 @@ static NSString *const kSPKFeedActionButtonEnabledKey = @"feed_action_btn";
                                             [SPKSetting switchCellWithTitle:@"Downloads"
                                                                        icon:SPKSettingsIcon(@"download")
                                                                 defaultsKey:@"feed_header_button_dest_downloads"],
-                                            [SPKSetting switchCellWithTitle:@"Sparkle Settings"
+                                            [SPKSetting switchCellWithTitle:@"PhoenixGram Settings"
                                                                        icon:SPKSettingsIcon(@"settings")
                                                                 defaultsKey:@"feed_header_button_dest_settings"],
                                         ],
                                                         @"Choose which sheets the header button can open. Enable one for a direct tap, or several to pick from the long-press menu.")
                                     ]],
         ],
-                        @"Adds a Sparkle button to the home feed header. "
+                        @"Adds a PhoenixGram button to the home feed header. "
                         @"Tap opens the selected destination. Long press opens the menu of enabled destinations."),
         SPKTopicSection(@"Layout", @[
             SPKSettingApplySelectedMenuIcon([SPKSetting menuCellWithTitle:@"Main Feed" icon:SPKSettingsIcon(@"feed") menu:SPKMainFeedModeMenu()], SPKSettingsIcon(@"feed")),
@@ -75,7 +75,7 @@ static NSString *const kSPKFeedActionButtonEnabledKey = @"feed_action_btn";
                             requiresRestart:YES]
         ],
                         @"1. Force Instagram's chronological Following feed instead of the algorithmic For You feed. Title stays \"For you\".\n"
-                        @"2. Stop the feed header logo long-press from opening Instagram's app icon picker. Sparkle has its own in Settings.\n"
+                        @"2. Stop the feed header logo long-press from opening Instagram's app icon picker. PhoenixGram has its own in Settings.\n"
                         @"3. Hide the horizontal stories tray at the top of the feed.\n"
                         @"4. Hide the entire home feed, leaving only the header.\n"
                         @"5. Remove algorithmically suggested posts from the feed.\n"

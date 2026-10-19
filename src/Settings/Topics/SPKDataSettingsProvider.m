@@ -161,7 +161,7 @@
                                            icon:SPKSettingsIcon(@"info")
                                  viewController:[SPKStorageUsageViewController new]]
         ],
-                        @"See how much on-device space each Sparkle feature uses."),
+                        @"See how much on-device space each PhoenixGram feature uses."),
         SPKTopicSection(@"Backup & Transfer", @[
             SPKSettingApplyIconTint([SPKSetting navigationCellWithTitle:@"Export"
                                                                subtitle:@""

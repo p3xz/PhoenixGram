@@ -138,7 +138,7 @@ static NSArray *SPKStoriesSettingsSections(void) {
                                 defaultsKey:@"stories_detailed_color_picker"]
         ],
                         @"1. Allow selecting videos from your library in the story photo sticker.\n"
-                        @"2. Use media from Sparkle Gallery as stickers.\n"
+                        @"2. Use media from PhoenixGram Gallery as stickers.\n"
                         @"3. Long press on the eyedropper tool in stories to customize text color more precisely."),
 
         SPKTopicSection(@"Other", @[

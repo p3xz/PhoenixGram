@@ -446,6 +446,10 @@ static NSString *SPKNormalizedLogBody(NSString *category, NSString *body, NSStri
     NSString *resolvedCategory = category.length ? category : @"General";
     NSString *resolvedBody = body ?: @"";
     NSArray<NSDictionary<NSString *, NSString *> *> *legacyPrefixes = @[
+        @{@"prefix" : @"[PhoenixGram][startup]", @"category" : @"Startup"},
+        @{@"prefix" : @"[PhoenixGram Gallery]", @"category" : @"Gallery"},
+        @{@"prefix" : @"[PhoenixGram BulkDownload]", @"category" : @"BulkDownload"},
+        @{@"prefix" : @"[PhoenixGram]", @"category" : resolvedCategory},
         @{@"prefix" : @"[Sparkle][startup]", @"category" : @"Startup"},
         @{@"prefix" : @"[Sparkle Gallery]", @"category" : @"Gallery"},
         @{@"prefix" : @"[Sparkle BulkDownload]", @"category" : @"BulkDownload"},

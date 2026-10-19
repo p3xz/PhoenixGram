@@ -265,7 +265,7 @@ static NSArray *SPKMessagesSettingsSections(void) {
                                        icon:SPKSettingsIcon(@"photo")
                                 defaultsKey:@"msgs_upload_gallery_media"]
         ],
-                        @"Adds an option to the composer plus (+) menu that sends a photo from the Sparkle Gallery into the chat."),
+                        @"Adds an option to the composer plus (+) menu that sends a photo from the PhoenixGram Gallery into the chat."),
         SPKTopicSection(@"Confirmation", @[
             [SPKSetting switchCellWithTitle:@"Confirm Audio Call"
                                        icon:SPKSettingsIcon(@"call")

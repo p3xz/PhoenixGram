@@ -62,7 +62,7 @@ static NSDictionary *SPKSettingsLockSection(void) {
         if (!enabled && currentManager.isLockEnabled) {
             [SPKIGAlertPresenter presentAlertFromViewController:presenter
                                                           title:@"Disable Settings Passcode"
-                                                        message:@"Sparkle Settings will no longer require authentication to open."
+                                                        message:@"PhoenixGram Settings will no longer require authentication to open."
                                                         actions:@[
                                                             [SPKIGAlertAction actionWithTitle:@"Cancel"
                                                                                         style:SPKIGAlertActionStyleCancel
@@ -93,7 +93,7 @@ static NSDictionary *SPKSettingsLockSection(void) {
         return [SPKSettingsLockManager sharedManager].isLockEnabled;
     };
 
-    return SPKTopicSection(@"Settings Lock", @[ lockSwitch, changePasscode ], @"Require the independent Settings passcode or biometrics when opening Sparkle Settings, including topic sheets.");
+    return SPKTopicSection(@"Settings Lock", @[ lockSwitch, changePasscode ], @"Require the independent Settings passcode or biometrics when opening PhoenixGram Settings, including topic sheets.");
 }
 
 @implementation SPKToolsSettingsProvider
@@ -146,8 +146,8 @@ static NSDictionary *SPKSettingsLockSection(void) {
         ],
                         @"1. Opens settings when long pressing the Home tab or the next visible tab if the Home tab is hidden.\n"
                         @"2. Haptic feedback when the settings shortcut gesture fires.\n"
-                        @"3. Open Sparkle settings automatically every time Instagram launches.\n"
-                        @"4. Suppress every Sparkle feature hook, leaving only the shortcut to reach this screen. Use to isolate crashes."),
+                        @"3. Open PhoenixGram settings automatically every time Instagram launches.\n"
+                        @"4. Suppress every PhoenixGram feature hook, leaving only the shortcut to reach this screen. Use to isolate crashes."),
 
         SPKTopicSection(@"", @[
             [SPKSetting buttonCellWithTitle:@"Reset Safe Startup Mode"

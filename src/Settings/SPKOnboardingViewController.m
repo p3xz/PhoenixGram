@@ -4,7 +4,7 @@
 
 - (NSArray<SPKPagedSheetPage *> *)buildPages {
     return @[
-        [SPKPagedSheetPage pageWithTitle:@"Welcome to Sparkle"
+        [SPKPagedSheetPage pageWithTitle:@"Welcome to PhoenixGram"
                                     body:@"Everything you love about Instagram, with the controls it never gave you — built right in for a seamless experience."
                                     rows:nil],
         [SPKPagedSheetPage pageWithTitle:@"What you can do"
@@ -18,8 +18,8 @@
                                         @{ @"icon": @"ads", @"text": @"Get rid of ads and annoyances" },
                                         @{ @"icon": @"", @"text": @"... and so much more!" },
                                     ]],
-        [SPKPagedSheetPage pageWithTitle:@"Find Sparkle anytime"
-                                    body:@"You can open Sparkle settings anytime by:"
+        [SPKPagedSheetPage pageWithTitle:@"Find PhoenixGram anytime"
+                                    body:@"You can open PhoenixGram settings anytime by:"
                                     rows:@[
                                         @{ @"icon": @"settings_menu", @"text": @"Long pressing the menu on your profile" },
                                         @{ @"icon": @"home", @"text": @"Long pressing the Home tab" },

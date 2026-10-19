@@ -149,7 +149,7 @@ static NSDictionary *SPKFeatureDefaults(void) {
         @"downloads_max_concurrent" : @(2),
         @"downloads_history_limit" : @(100),
         @"downloads_photos_album_enabled" : @(NO),
-        @"downloads_photos_album" : @"Sparkle",
+        @"downloads_photos_album" : @"PhoenixGram",
         @"general_hide_ads_feed" : @(YES),
         @"general_hide_ads_stories" : @(YES),
         @"general_hide_ads_reels" : @(YES),

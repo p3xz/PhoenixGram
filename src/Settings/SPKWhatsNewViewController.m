@@ -28,7 +28,7 @@
                                         @{ @"icon": @"pinch", @"text": @"Pinch to zoom into videos in the full-screen preview" },
                                         @{ @"icon": @"messages", @"text": @"Refined messages-only mode" },
                                         @{ @"icon": @"story_preview", @"text": @"See message previews by long pressing a chat" },
-                                        @{ @"icon": @"sticker", @"text": @"Upload videos as story stickers from Photos or Sparkle Gallery" },
+                                        @{ @"icon": @"sticker", @"text": @"Upload videos as story stickers from Photos or PhoenixGram Gallery" },
                                         @{ @"icon": @"calendar", @"text": @"See a post's date in the action button menu" },
                                         @{ @"icon": @"profile_analyzer", @"text": @"Swipe to delete a single change in Profile Analyzer" },
                                         @{ @"icon": @"filter", @"text": @"Sort, filter and search the Gallery picker across folders" },

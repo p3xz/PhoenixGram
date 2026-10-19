@@ -897,7 +897,7 @@ static NSString *SPKTransferArchiveFilename(BOOL includeSettings, BOOL includeGa
         [parts addObject:@"Analyzer"];
     NSString *content = parts.count == 0 ? @"Backup" : (parts.count > 2 ? @"Backup" : [parts componentsJoinedByString:@"+"]);
 
-    NSMutableString *name = [NSMutableString stringWithFormat:@"Sparkle-%@", content];
+    NSMutableString *name = [NSMutableString stringWithFormat:@"PhoenixGram-%@", content];
     // Tag the filename by the scope that was chosen: a "this account" export always
     // carries the account's username; an all-accounts export is labelled only when it
     // actually included per-account-scopable content (settings or gallery).
@@ -1149,7 +1149,7 @@ static NSString *SPKTransferArchiveFilename(BOOL includeSettings, BOOL includeGa
         return;
 
     if (!self.isImportMode) {
-        SPKNotify(kSPKNotificationSettingsExport, @"Export complete", @"Sparkle backup saved successfully.", @"circle_check_filled", SPKNotificationToneForIconResource(@"circle_check_filled"));
+        SPKNotify(kSPKNotificationSettingsExport, @"Export complete", @"PhoenixGram backup saved successfully.", @"circle_check_filled", SPKNotificationToneForIconResource(@"circle_check_filled"));
         return;
     }
 
@@ -1428,8 +1428,8 @@ static NSString *SPKTransferArchiveFilename(BOOL includeSettings, BOOL includeGa
     BOOL currentScope = (scope == SPKTransferAccountScopeCurrentAccount);
     NSString *username = [SPKAccountManager currentAccountUsername];
     NSString *message = currentScope
-                            ? [NSString stringWithFormat:@"This restores every Sparkle preference for %@ to its default value. Other accounts and Gallery media are left untouched. This cannot be undone.", username.length ? username : @"the active account"]
-                            : @"This restores every Sparkle preference to its default value. Gallery media is left untouched. This cannot be undone.";
+                            ? [NSString stringWithFormat:@"This restores every PhoenixGram preference for %@ to its default value. Other accounts and Gallery media are left untouched. This cannot be undone.", username.length ? username : @"the active account"]
+                            : @"This restores every PhoenixGram preference to its default value. Gallery media is left untouched. This cannot be undone.";
     NSString *currentPK = [SPKAccountManager currentAccountPK];
     [SPKIGAlertPresenter presentAlertFromViewController:controller
                                                   title:@"Reset All Settings"
@@ -1458,7 +1458,7 @@ static NSString *SPKTransferArchiveFilename(BOOL includeSettings, BOOL includeGa
                                                                                   }
                                                                                   SPKNotify(kSPKNotificationSettingsImport,
                                                                                             @"Settings reset",
-                                                                                            currentScope ? @"This account's Sparkle preferences were restored to defaults." : @"All Sparkle preferences were restored to defaults.",
+                                                                                            currentScope ? @"This account's PhoenixGram preferences were restored to defaults." : @"All PhoenixGram preferences were restored to defaults.",
                                                                                             @"circle_check_filled",
                                                                                             SPKNotificationToneForIconResource(@"circle_check_filled"));
                                                                                   [SPKUtils showRestartConfirmation];

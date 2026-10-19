@@ -1,10 +1,10 @@
 Package: com.sparkle.sparkle
-Name: Sparkle for Instagram
+Name: PhoenixGram for Instagram
 Version: 1.2.0
 Architecture: iphoneos-arm
-Description: Bring the spark back to Instagram!
+Description: Rise with the flame — PhoenixGram for Instagram!
 Homepage: https://github.com/efibalogh/sparkle-ig
-Maintainer: efibalogh
-Author: efibalogh
+Maintainer: PhoenixGram Team
+Author: efibalogh, PhoenixGram Team
 Section: Tweaks
 Depends: mobilesubstrate

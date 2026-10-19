@@ -147,7 +147,7 @@ static SPKSetting *SPKHideTabSwitch(NSString *title, NSString *iconName, NSStrin
             })
         ],
                         @"These settings are accessible when only the Messages tab is enabled.\n"
-                        @"1. Hides the tab bar to free up screen space. Sparkle settings can be accessed via long pressing the right navigation bar button.\n"
+                        @"1. Hides the tab bar to free up screen space. PhoenixGram settings can be accessed via long pressing the right navigation bar button.\n"
                         @"2. Shows the feed header shortcut on the left side of the Messages navigation bar."),
         SPKTopicSection(@"Explore & Search", @[
             [SPKSetting switchCellWithTitle:@"Hide Explore Posts Grid"
@@ -175,7 +175,7 @@ static SPKSetting *SPKHideTabSwitch(NSString *title, NSString *iconName, NSStrin
                 s;
             })
         ],
-                        @"Redacts Sparkle UI elements from screenshots, screen recordings, and mirroring.")
+                        @"Redacts PhoenixGram UI elements from screenshots, screen recordings, and mirroring.")
     ]];
 
     {

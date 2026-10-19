@@ -719,7 +719,7 @@ typedef NS_ENUM(NSInteger, SPKGalleryViewMode) {
 
     UILabel *subtitle = [[UILabel alloc] initWithFrame:CGRectZero];
     subtitle.translatesAutoresizingMaskIntoConstraints = NO;
-    subtitle.text = @"Media you save with Sparkle will appear here.";
+    subtitle.text = @"Media you save with PhoenixGram will appear here.";
     subtitle.textColor = [SPKUtils SPKColor_InstagramSecondaryText];
     subtitle.font = [UIFont systemFontOfSize:14];
     subtitle.textAlignment = NSTextAlignmentCenter;
@@ -782,7 +782,7 @@ typedef NS_ENUM(NSInteger, SPKGalleryViewMode) {
         subtitle = [NSString stringWithFormat:@"Media you save to “%@” will appear here.", folderName];
     } else {
         title = @"No files in Gallery";
-        subtitle = @"Media you save with Sparkle will appear here.";
+        subtitle = @"Media you save with PhoenixGram will appear here.";
     }
     self.emptyStateLabel.text = title;
     self.emptyStateSubtitle.text = subtitle;

@@ -340,7 +340,7 @@ UIMenu *SPKMediaPhotoQualityMenu(void) {
 // every story you happen to watch.
 UIMenu *SPKAutoSaveDestinationMenu(void) {
     return [UIMenu menuWithChildren:@[
-        SPKMenuCommand(@"Sparkle Gallery", nil, nil, kSPKAutoSaveDestinationKey, @"gallery", NO),
+        SPKMenuCommand(@"PhoenixGram Gallery", nil, nil, kSPKAutoSaveDestinationKey, @"gallery", NO),
         SPKMenuCommand(@"Photos App", nil, nil, kSPKAutoSaveDestinationKey, @"photos", NO)
     ]];
 }

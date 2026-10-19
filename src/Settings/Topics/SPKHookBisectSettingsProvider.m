@@ -192,7 +192,7 @@ static NSArray<SPKSetting *> *SPKPerfMeterRows(void) {
                                         @"Numbers that climb as you navigate and never drop back are a leak: "
                                         @"screens or recognizers are piling up and every one of them keeps doing "
                                         @"work. Start a new measurement before each run so rounds compare.\n\n"
-                                        @"Every Sparkle hook that runs during layout is timed, so Most Expensive "
+                                        @"Every PhoenixGram hook that runs during layout is timed, so Most Expensive "
                                         @"Hook names the one eating the main thread. Turn the meter on, browse "
                                         @"until it feels slow, then come back and read it. The full ranking goes "
                                         @"to the log every 15 seconds.")];

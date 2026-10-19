@@ -63,7 +63,7 @@
                                       icon:SPKSettingsIcon(@"info")
                                     action:^{
                                         NSString *message =
-                                            @"Each logged-in account gets its own Sparkle settings. A newly seen "
+                                            @"Each logged-in account gets its own PhoenixGram settings. A newly seen "
                                             @"account starts from your current settings until you change something.\n\n"
                                             @"These stay shared across all accounts:\n"
                                             @"•  App icon\n"
@@ -223,7 +223,7 @@
         ],
                         @"1. Adds a copy action to comment menus.\n"
                         @"2. Adds Photos, Share, Gallery, and link actions for GIF and photo comments.\n"
-                        @"3. Long-press the composer's photo button to attach an image from your Sparkle Gallery."),
+                        @"3. Long-press the composer's photo button to attach an image from your PhoenixGram Gallery."),
         SPKTopicSection(@"", @[
             [SPKSetting switchCellWithTitle:@"Swipe to Close Comments"
                                        icon:SPKSettingsIcon(@"left_right")
@@ -249,7 +249,7 @@
             [self perAccountSetting],
             [self perAccountInfoSetting]
         ],
-                        @"Give each logged-in account its own Sparkle settings."),
+                        @"Give each logged-in account its own PhoenixGram settings."),
         SPKTopicSection(@"Storage", @[
             clearCacheSetting,
             [SPKSetting menuCellWithTitle:@"Auto Clear Cache"
