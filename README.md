@@ -60,56 +60,77 @@ For the full list of features, check out [`FEATURES.md`](FEATURES.md).
   - Hide tabs and UI clutter.
 - **Confirmations**:
   - Optional "are you sure?" guards for accidental likes, follows, reposts, calls, comments, and more.
+- **Profile follow-status badge**:
+  - Live status badge right on user profiles indicating whether they follow you back: `Follows you 😊` (green) or `Doesn't follow you 😔` (red).
+  - Cleanly hides when unknown or on your own profile.
+  - Fully customizable in Settings (Text, Icon, or Icon + Text, with vibrant colors or native gray).
 - **Liquid Glass (iOS 26+)**:
-  - Native Liquid Glass integration across Sparkle's own UI, plus an option to force-enable Instagram's.
+  - Native Liquid Glass integration across PhoenixGram's own UI, plus an option to force-enable Instagram's.
   - On iOS 18 and lower, a **Pill-Shaped Tab Bar** toggle brings the floating pill tab bar (shape only; the glass material stays iOS 26+).
 
 ## Installation
 
-> [!IMPORTANT]
-> Sparkle does **not** ship Instagram itself. Pre-injected IPAs are distributed on the [Telegram channel](https://t.me/sparkle_ig), and the jailbroken `.deb` is on [Releases](https://github.com/efibalogh/sparkle-ig/releases/latest) or from the [Sparkle repo](https://efibalogh.github.io/sparkle-ig/).
+PhoenixGram is distributed as:
+- **Standalone injection-ready tweak `.dylib`** (`Sparkle.dylib` / `PhoenixGram.dylib`), compiled automatically via GitHub Actions for sideloading into an Instagram IPA.
+- **Rootless `.deb`** (`iphoneos-arm64`) for modern jailbreaks (Dopamine, palera1n rootless).
+- **Rootful `.deb`** (`iphoneos-arm`) for legacy rootful jailbreaks.
 
-### Sideloaded
+### GitHub Actions Automated Builds
 
-1. Grab the latest **pre-injected IPA** from the [Telegram channel](https://t.me/sparkle_ig).
-2. Install the IPA with your sideloading tool of choice.
-   - Use the **`_sidestore`** build for **AltStore / SideStore / LiveContainer** (or if you don't want to have app extensions).
+Every push and pull request on `main`, `phoenixgram`, and `dev` triggers the **Build PhoenixGram** workflow:
+1. Navigate to the **Actions** tab in this repository.
+2. Select the latest run of the **Build PhoenixGram** workflow.
+3. Under **Artifacts**, download:
+   - `PhoenixGram-v<version>-sideload-dylibs`: Contains the standalone injection-ready `Sparkle.dylib` (and `PhoenixGram.dylib`), companion `SPKSideloadFix.dylib`, `libFLEX.dylib`, and filter plists.
+   - `PhoenixGram-v<version>-deb-packages`: Contains the rootless and rootful `.deb` packages for jailbroken devices.
 
-> [!NOTE]
-> Sparkle uses Instagram's bundled image assets everywhere. The distributed IPA is a full (un-thinned) build (it contains icons for all screen sizes), so the higher-quality in-app icons render crisply on every device. If you build your own from an IPA that was already thinned to a smaller device, some icon scales may be missing. See [Building from source](#building-from-source).
+---
 
-### Jailbroken
+## IPA Injection & Sideloading Guide
 
-Add the Sparkle repo to your package manager and you will get updates as they ship.
+To run PhoenixGram on non-jailbroken devices via sideloading (AltStore, SideStore, Feather, LiveContainer, Sideloadly):
 
-<div align="left">
+### 1. Requirements
+- **Decrypted Instagram IPA**: Obtain a decrypted, un-thinned IPA of a supported Instagram version (tested on **441.0.0** and **410.1.0**).
+- **PhoenixGram Sideload Dylibs**: Downloaded from GitHub Actions artifacts (`Sparkle.dylib` and companion `SPKSideloadFix.dylib`).
+- **Signing Certificate / Profile**: A free 7-day Apple ID, developer account certificate, or an enterprise cert.
 
-[![Add the Sparkle repo](https://img.shields.io/badge/%E2%9C%A6%20Add%20the%20Sparkle%20Repo-ED1E9C?style=for-the-badge)](https://efibalogh.github.io/sparkle-ig/)
+### 2. Required Files for Injection
+- `Sparkle.dylib` (or `PhoenixGram.dylib`): The main compiled tweak binary (arm64, iOS 15.0+).
+- `SPKSideloadFix.dylib`: **Mandatory companion dylib** that patches sideload sandbox paths, keychain access, and prevents crash loops on sideloaded installations.
+- `CydiaSubstrate` / `Substitute`: Runtime hooking engine provided by injection tools (e.g. `cyan`, `Azule`, or `Sideloadly`).
+- `modules/ffmpegkit/*.framework` (Optional): Required if you plan to use in-app DASH video+audio merging and local media editing.
 
-</div>
+### 3. Recommended Injection Methods
 
-Open that page on your device and tap Sileo or Zebra,
-or add the URL by hand:
-
+#### Option A: cyan / pyzule (macOS / Linux / Windows CLI)
+```sh
+cyan -i com.burbn.instagram.ipa -o PhoenixGram.ipa -f Sparkle.dylib SPKSideloadFix.dylib -m 15.0 -duq
 ```
-https://efibalogh.github.io/sparkle-ig/
+*(If building for SideStore/AltStore, pass `--no-ext` / remove `.appex` extension bundles to avoid exceeding app ID limits).*
+
+#### Option B: Azule (macOS / Linux CLI)
+```sh
+azule -i com.burbn.instagram.ipa -o PhoenixGram.ipa -f Sparkle.dylib SPKSideloadFix.dylib
 ```
 
-The repo serves both the rootless (`iphoneos-arm64`) and rootful (`iphoneos-arm`) builds; your
-package manager picks the right one for your jailbreak automatically.
+#### Option C: Sideloadly (GUI for macOS & Windows)
+1. Open **Sideloadly** and drag your decrypted Instagram IPA into the app.
+2. Click **Advanced Options**.
+3. Under **Tweak Injection**, click `+` and select both `Sparkle.dylib` and `SPKSideloadFix.dylib`.
+4. Ensure CydiaSubstrate injection is enabled.
+5. Enter your Apple ID and click **Start** to inject, sign, and sideload to your device.
 
-Rather not add a repo? Install a single `.deb` instead, and update it yourself each release:
+#### Option D: On-Device Signing (Feather / SideStore / Scarlet / Esign)
+1. Import the decrypted Instagram IPA into your signing app.
+2. In the tweak/dylib management settings for the app, add `Sparkle.dylib` and `SPKSideloadFix.dylib`.
+3. Sign with your provisioning profile and install.
 
-1. Download the rootless or rootful `.deb` from [Releases](https://github.com/efibalogh/sparkle-ig/releases/latest).
-2. Open the `.deb` in Sileo/Zebra (or install it with `dpkg -i` over SSH), then respring.
+---
 
-### Build it yourself
+## Opening PhoenixGram Settings
 
-You can build from source locally, or fork the repo and run the **Build and Package Sparkle** GitHub Action with your own decrypted IPA URL. The injected IPA lands as a draft release in *your* fork. See [Building from source](#building-from-source).
-
-## Opening Sparkle Settings
-
-By default, **long-press the Home tab** or the **Profile settings button** to open Sparkle Settings. You can also enable *Show Settings on App Launch*. If you hide the Home tab, the long-press automatically moves to another visible tab so Settings is always reachable.
+By default, **long-press the Home tab** or the **Profile settings button** to open PhoenixGram Settings. You can also enable *Show Settings on App Launch*. If you hide the Home tab, the long-press automatically moves to another visible tab so Settings is always reachable.
 
 ## Screenshots
 
@@ -202,15 +223,11 @@ Contributions are greatly appreciated! Feel free to open a pull request.
 
 Not a coder? Documentation improvements are always appreciated too.
 
-## Support the project
+## Author & Maintainer
 
-Sparkle takes a lot of time to develop and maintain as Instagram changes constantly, and I can only work on it in my limited amount of free time. If you'd like to support the work:
+- **Namish Yadav** ([p3xz](https://github.com/p3xz)) — Creator & maintainer of PhoenixGram.
 
-- ☕ Donate on [Ko-fi](https://ko-fi.com/sparkle_ig).
-- 📣 Join and share the [Telegram channel](https://t.me/sparkle_ig).
-- ⭐ Star the repo and tell people who'd like it.
-
-## Credits
+## Credits & Upstream
 
 - [**waffle (efibalogh)** • Sparkle](https://github.com/efibalogh/sparkle-ig): the upstream project PhoenixGram is based on.
 - [**SoCuul** • SCInsta](https://github.com/SoCuul/SCInsta): the base project Sparkle was built on.
@@ -223,4 +240,4 @@ Sparkle takes a lot of time to develop and maintain as Instagram changes constan
 ## License
 
 PhoenixGram is licensed under the [GNU General Public License v3.0](LICENSE).
-Original copyright © efibalogh and contributors.
+Original Sparkle codebase copyright © efibalogh and contributors.

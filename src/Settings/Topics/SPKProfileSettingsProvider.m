@@ -75,24 +75,21 @@ static NSString *const kSPKFollowIndicatorModeText = @"text";
 static NSString *const kSPKFollowIndicatorModeIcon = @"icon";
 static NSString *const kSPKFollowIndicatorModeIconText = @"icontext";
 
-// Mirrors FollowIndicator.x: no default is registered for the mode key, so an
-// empty value means "use the legacy on/off bool" for pre-mode-menu users.
 static NSString *SPKFollowIndicatorEffectiveMode(void) {
+    if (![SPKUtils getBoolPref:@"profile_follow_indicator"])
+        return kSPKFollowIndicatorModeOff;
     NSString *mode = [SPKUtils getStringPref:kSPKFollowIndicatorModeKey];
     if (mode.length > 0)
         return mode;
-    return [SPKUtils getBoolPref:@"profile_follow_indicator"] ? kSPKFollowIndicatorModeText
-                                                              : kSPKFollowIndicatorModeOff;
+    return kSPKFollowIndicatorModeText;
 }
 
 static NSString *const kSPKFollowIndicatorColorfulKey = @"profile_follow_indicator_colorful";
 
-// Mirrors FollowIndicator.x: no default is registered, so a never-set value
-// falls back to the legacy bool (pre-menu enabled users keep colored).
 static BOOL SPKFollowIndicatorColorfulEnabled(void) {
     id value = SPKPreferenceObjectForKey(kSPKFollowIndicatorColorfulKey);
     if (value == nil)
-        return [SPKUtils getBoolPref:@"profile_follow_indicator"];
+        return YES;
     return [value boolValue];
 }
 
@@ -110,9 +107,8 @@ static UICommand *SPKFollowIndicatorModeCommand(NSString *title, NSString *value
 
 static UIMenu *SPKFollowIndicatorModeMenu(void) {
     return [UIMenu menuWithChildren:@[
-        SPKFollowIndicatorModeCommand(@"Off", kSPKFollowIndicatorModeOff),
-        SPKFollowIndicatorModeCommand(@"Icon", kSPKFollowIndicatorModeIcon),
         SPKFollowIndicatorModeCommand(@"Text", kSPKFollowIndicatorModeText),
+        SPKFollowIndicatorModeCommand(@"Icon", kSPKFollowIndicatorModeIcon),
         SPKFollowIndicatorModeCommand(@"Icon & Text", kSPKFollowIndicatorModeIconText)
     ]];
 }
@@ -124,7 +120,7 @@ static UIMenu *SPKFollowIndicatorModeMenu(void) {
         SPKTopicSection(@"Action Button", @[
             [SPKSetting switchCellWithTitle:@"Profile Action Button"
                                        icon:SPKSettingsIcon(@"action")
-                                defaultsKey:@"profile_action_btn"],
+                                 defaultsKey:@"profile_action_btn"],
             SPKActionButtonDefaultActionNavigationSetting(SPKActionButtonSourceProfile),
             SPKActionButtonConfigurationNavigationSetting(SPKActionButtonSourceProfile, @"Profile", SPKActionButtonSupportedActionsForSource(SPKActionButtonSourceProfile), SPKActionButtonDefaultSectionsForSource(SPKActionButtonSourceProfile)),
             SPKSettingApplySelectedMenuIcon([SPKSetting menuCellWithTitle:@"Copy Info Default" icon:SPKSettingsIcon(@"copy") menu:SPKProfileDefaultCopyInfoMenu()], SPKSettingsIcon(@"copy"))
@@ -133,32 +129,39 @@ static UIMenu *SPKFollowIndicatorModeMenu(void) {
         SPKTopicSection(@"Profile Picture", @[
             [SPKSetting switchCellWithTitle:@"Long Press to Expand"
                                        icon:SPKSettingsIcon(@"expand")
-                                defaultsKey:@"profile_photo_zoom"]
+                                 defaultsKey:@"profile_photo_zoom"]
         ],
                         @"Long press a profile picture to open it expanded."),
         SPKTopicSection(@"Indicators", @[
             ({
-                SPKSetting *mode = [SPKSetting menuCellWithTitle:@"Following Indicator"
-                                                            icon:SPKSettingsIcon(@"user_check")
+                SPKSetting *toggle = [SPKSetting switchCellWithTitle:@"Follow Status Badge"
+                                                                icon:SPKSettingsIcon(@"user_check")
+                                                         defaultsKey:@"profile_follow_indicator"];
+                toggle.switchChangeHandler = ^(BOOL isOn) {
+                    SPKPreferenceSetObject(@(isOn), @"profile_follow_indicator");
+                    [[NSNotificationCenter defaultCenter] postNotificationName:SPKFollowIndicatorDidChangeNotification object:nil];
+                };
+                toggle;
+            }),
+            ({
+                SPKSetting *mode = [SPKSetting menuCellWithTitle:@"Badge Style"
+                                                            icon:SPKSettingsIcon(@"palette")
                                                             menu:SPKFollowIndicatorModeMenu()];
                 mode.accessoryTextProvider = ^NSString * {
                     NSString *value = SPKFollowIndicatorEffectiveMode();
-                    if ([value isEqualToString:kSPKFollowIndicatorModeText])
-                        return @"Text";
                     if ([value isEqualToString:kSPKFollowIndicatorModeIcon])
                         return @"Icon";
                     if ([value isEqualToString:kSPKFollowIndicatorModeIconText])
                         return @"Icon + Text";
-                    return @"Off";
+                    return @"Text";
+                };
+                mode.hiddenProvider = ^BOOL {
+                    return ![SPKUtils getBoolPref:@"profile_follow_indicator"];
                 };
                 mode;
             }),
             ({
-                // Off (default) = Instagram's native gray for both states, so it
-                // doesn't stand out as modded. On = the colored green/red. Uses a
-                // custom value provider so the legacy fallback (pre-menu users who
-                // had the indicator on keep colored) is reflected accurately.
-                SPKSetting *colorful = [SPKSetting switchCellWithTitle:@"Colorful Indicator"
+                SPKSetting *colorful = [SPKSetting switchCellWithTitle:@"Colorful Badge"
                                                                   icon:SPKSettingsIcon(@"palette")
                                                            defaultsKey:kSPKFollowIndicatorColorfulKey];
                 colorful.switchValueProvider = ^BOOL {
@@ -169,18 +172,18 @@ static UIMenu *SPKFollowIndicatorModeMenu(void) {
                     [[NSNotificationCenter defaultCenter] postNotificationName:SPKFollowIndicatorDidChangeNotification object:nil];
                 };
                 colorful.hiddenProvider = ^BOOL {
-                    return [SPKFollowIndicatorEffectiveMode() isEqualToString:kSPKFollowIndicatorModeOff];
+                    return ![SPKUtils getBoolPref:@"profile_follow_indicator"] || [SPKFollowIndicatorEffectiveMode() isEqualToString:kSPKFollowIndicatorModeOff];
                 };
                 colorful;
             }),
             [SPKSetting switchCellWithTitle:@"Hide Notes Bubble"
                                        icon:SPKSettingsIcon(@"notes")
-                                defaultsKey:@"profile_hide_notes_bubble"],
+                                 defaultsKey:@"profile_hide_notes_bubble"],
             [SPKSetting switchCellWithTitle:@"Hide Threads Button"
                                        icon:SPKSettingsIcon(@"threads")
-                                defaultsKey:@"profile_hide_threads_btn"]
+                                 defaultsKey:@"profile_hide_threads_btn"]
         ],
-                        @"Following Indicator shows whether a profile follows you back, under their stats. Text or Icon; it's Instagram's native gray unless you turn on Colorful Indicator for green/red."),
+                        @"Follow Status Badge shows whether a profile follows you back (Follows you 😊 in green, or Doesn't follow you 😔 in red), under their stats."),
         SPKTopicSection(@"Confirmation", @[
             [SPKSetting switchCellWithTitle:@"Confirm Follow"
                                        icon:SPKSettingsIcon(@"user_follow")

@@ -27,6 +27,9 @@
             [SPKSetting staticCellWithTitle:@"PhoenixGram"
                                    subtitle:SPKVersionString
                                        icon:SPKSettingsIcon(@"action")],
+            [SPKSetting staticCellWithTitle:@"Developer"
+                                   subtitle:@"Namish Yadav"
+                                       icon:SPKSettingsIcon(@"user_circle")],
             [SPKSetting staticCellWithTitle:@"Instagram"
                                    subtitle:[SPKUtils IGVersionString]
                                        icon:SPKSettingsIcon(@"app")],

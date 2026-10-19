@@ -1,0 +1,204 @@
+name: Build PhoenixGram
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'phoenixgram'
+      - 'dev'
+  pull_request:
+    branches:
+      - 'main'
+      - 'phoenixgram'
+      - 'dev'
+  workflow_dispatch:
+    inputs:
+      build_sideload_dylib:
+        description: "Build injection-ready Sideload tweak dylib"
+        required: true
+        type: boolean
+        default: true
+      build_rootless_deb:
+        description: "Build Rootless .deb package"
+        required: true
+        type: boolean
+        default: true
+      build_rootful_deb:
+        description: "Build Rootful .deb package"
+        required: true
+        type: boolean
+        default: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build PhoenixGram
+    runs-on: macos-14
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Build Dependencies
+        run: |
+          brew install ldid dpkg make autoconf automake cmake libtool meson nasm ninja pkgconf wget yasm
+          echo "$(brew --prefix make)/libexec/gnubin" >> "$GITHUB_PATH"
+
+      - name: Setup Theos
+        uses: actions/checkout@v4
+        with:
+          repository: theos/theos
+          # Pinned to commit 405e5c6ddb288615c030eeaedc6b265aae748285 (Logos a623700)
+          # Later versions broke bare %orig parsing ({ %orig; }).
+          ref: 405e5c6ddb288615c030eeaedc6b265aae748285
+          path: theos
+          submodules: recursive
+
+      - name: Configure Theos Environment
+        run: |
+          echo "THEOS=${{ github.workspace }}/theos" >> "$GITHUB_ENV"
+
+      - name: Cache iOS SDK
+        id: sdk_cache
+        uses: actions/cache@v4
+        with:
+          path: theos/sdks/
+          key: iPhoneOS16.2.sdk
+          restore-keys: iPhoneOS16.2.sdk
+
+      - name: Download iOS SDK
+        if: steps.sdk_cache.outputs.cache-hit != 'true'
+        run: |
+          git clone --quiet -n --depth=1 --filter=tree:0 https://github.com/xybp888/iOS-SDKs/
+          cd iOS-SDKs
+          git sparse-checkout set --no-cone iPhoneOS16.2.sdk
+          git checkout
+          mv *.sdk "$THEOS/sdks"
+          cd ..
+          rm -rf iOS-SDKs
+
+      - name: Read PhoenixGram Version
+        id: version
+        run: |
+          VER="$(awk '/^Version:/ {print $2; exit}' control)"
+          echo "PHOENIXGRAM_VERSION=${VER}" >> "$GITHUB_ENV"
+          echo "version=${VER}" >> "$GITHUB_OUTPUT"
+
+      - name: Build Standalone Injection-Ready Sideload Dylibs
+        if: github.event_name != 'workflow_dispatch' || inputs.build_sideload_dylib
+        run: |
+          mkdir -p dist/sideload
+          
+          echo "=== Compiling PhoenixGram Sideload Dylib ==="
+          make clean
+          make SIDELOAD=1 DEBUG=0 FINALPACKAGE=1
+          
+          echo "=== Compiling SPKSideloadFix Companion Dylib ==="
+          make -C modules/SPKSideloadFix clean
+          make -C modules/SPKSideloadFix DEBUG=0 FINALPACKAGE=1
+          
+          if [ -d "modules/FLEXing/libflex" ]; then
+            echo "=== Compiling libFLEX Companion Dylib ==="
+            make -C modules/FLEXing/libflex clean
+            make -C modules/FLEXing/libflex DEBUG=0 FINALPACKAGE=1
+          fi
+          
+          # Stage outputs
+          cp .theos/obj/Sparkle.dylib dist/sideload/Sparkle.dylib
+          cp .theos/obj/Sparkle.dylib dist/sideload/PhoenixGram.dylib
+          cp modules/SPKSideloadFix/.theos/obj/SPKSideloadFix.dylib dist/sideload/SPKSideloadFix.dylib
+          
+          if [ -f "modules/FLEXing/libflex/.theos/obj/libFLEX.dylib" ]; then
+            cp modules/FLEXing/libflex/.theos/obj/libFLEX.dylib dist/sideload/libFLEX.dylib
+          fi
+          
+          cp Sparkle.plist dist/sideload/Sparkle.plist
+          cp Sparkle.plist dist/sideload/PhoenixGram.plist
+          
+          echo "=== Verifying Built Dylibs ==="
+          ls -la dist/sideload/
+          file dist/sideload/*.dylib
+
+      - name: Cache FFmpegKit Frameworks
+        id: ffmpeg_cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            modules/ffmpegkit
+            .cache/ffmpegkit
+          key: ffmpegkit-${{ runner.os }}-${{ hashFiles('fetch-ffmpegkit.sh') }}
+
+      - name: Prepare FFmpegKit Frameworks
+        if: (github.event_name != 'workflow_dispatch' || inputs.build_rootless_deb || inputs.build_rootful_deb)
+        run: |
+          chmod +x ./fetch-ffmpegkit.sh
+          ./fetch-ffmpegkit.sh
+
+      - name: Build Rootless Debian Package
+        if: github.event_name != 'workflow_dispatch' || inputs.build_rootless_deb
+        run: |
+          mkdir -p dist/packages
+          ./build.sh rootless
+          cp packages/*_rootless.deb dist/packages/
+
+      - name: Build Rootful Debian Package
+        if: github.event_name != 'workflow_dispatch' || inputs.build_rootful_deb
+        run: |
+          mkdir -p dist/packages
+          ./build.sh rootful
+          cp packages/*_rootful.deb dist/packages/
+
+      - name: Package Sideloadable IPA (if base decrypted IPA present)
+        run: |
+          IPA_COUNT=$(ls packages/com.burbn.instagram*.ipa 2>/dev/null | wc -l | tr -d ' ')
+          if [ "$IPA_COUNT" -gt 0 ]; then
+            echo "Found decrypted Instagram IPA. Building sideloadable IPA..."
+            ./build.sh ipa --release --flex
+            mkdir -p dist/ipa
+            cp packages/*.ipa dist/ipa/
+          else
+            echo "No decrypted Instagram IPA found in packages/com.burbn.instagram*.ipa — skipping IPA packaging."
+            echo "Standalone tweak dylibs and .deb packages will be uploaded as build artifacts."
+          fi
+
+      - name: Inspect Build Artifacts
+        run: |
+          echo "=== Sideload Artifacts ==="
+          ls -lh dist/sideload/ || true
+          echo "=== Debian Package Artifacts ==="
+          ls -lh dist/packages/ || true
+          if [ -d "dist/ipa" ]; then
+            echo "=== IPA Artifacts ==="
+            ls -lh dist/ipa/ || true
+          fi
+
+      - name: Upload Sideload Dylibs Artifact
+        if: (github.event_name != 'workflow_dispatch' || inputs.build_sideload_dylib) && hashFiles('dist/sideload/*.dylib') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: PhoenixGram-v${{ env.PHOENIXGRAM_VERSION }}-sideload-dylibs
+          path: dist/sideload/
+          if-no-files-found: error
+
+      - name: Upload Debian Packages Artifact
+        if: (github.event_name != 'workflow_dispatch' || inputs.build_rootless_deb || inputs.build_rootful_deb) && hashFiles('dist/packages/*.deb') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: PhoenixGram-v${{ env.PHOENIXGRAM_VERSION }}-deb-packages
+          path: dist/packages/
+          if-no-files-found: error
+
+      - name: Upload Sideloadable IPA Artifact (if created)
+        if: hashFiles('dist/ipa/*.ipa') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: PhoenixGram-v${{ env.PHOENIXGRAM_VERSION }}-ipa
+          path: dist/ipa/
+          if-no-files-found: ignore

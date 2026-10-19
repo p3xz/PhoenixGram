@@ -4,7 +4,7 @@ Version: 1.2.0
 Architecture: iphoneos-arm
 Description: Rise with the flame — PhoenixGram for Instagram!
 Homepage: https://github.com/efibalogh/sparkle-ig
-Maintainer: PhoenixGram Team
-Author: efibalogh, PhoenixGram Team
+Maintainer: Namish Yadav
+Author: Namish Yadav, efibalogh
 Section: Tweaks
 Depends: mobilesubstrate

@@ -30,13 +30,17 @@ static const void *kSPKFollowBadgeSpecAssocKey = &kSPKFollowBadgeSpecAssocKey;
 // menu existed. This fallback works across every pref namespace (global +
 // per-account) without a migration write.
 static NSString *SPKFollowIndicatorMode(void) {
+    if (![SPKUtils getBoolPref:@"profile_follow_indicator"])
+        return @"off";
     NSString *mode = [SPKUtils getStringPref:@"profile_follow_indicator_mode"];
     if (mode.length > 0)
         return mode;
-    return [SPKUtils getBoolPref:@"profile_follow_indicator"] ? @"text" : @"off";
+    return @"text";
 }
 
 static BOOL SPKFollowIndicatorEnabled(void) {
+    if (![SPKUtils getBoolPref:@"profile_follow_indicator"])
+        return NO;
     return ![SPKFollowIndicatorMode() isEqualToString:@"off"];
 }
 
@@ -50,14 +54,11 @@ static BOOL SPKFollowIndicatorShowsText(void) {
     return [mode isEqualToString:@"text"] || [mode isEqualToString:@"icontext"];
 }
 
-// Colorful (green/red) is off by default: the indicator is native gray unless
-// the user opts in. Like the mode key, no default is registered so a never-set
-// value can fall back to the legacy bool — anyone who had the indicator enabled
-// before this menu existed keeps their original colored look (text + colorful).
+// Colorful (green/red) is enabled by default in PhoenixGram.
 static BOOL SPKFollowIndicatorColorful(void) {
     id value = SPKPreferenceObjectForKey(@"profile_follow_indicator_colorful");
     if (value == nil)
-        return [SPKUtils getBoolPref:@"profile_follow_indicator"];
+        return YES;
     return [value boolValue];
 }
 
@@ -65,8 +66,8 @@ static BOOL SPKFollowIndicatorColorful(void) {
 static UIColor *SPKFollowIndicatorColor(BOOL followsYou) {
     if (!SPKFollowIndicatorColorful())
         return [SPKUtils SPKColor_InstagramSecondaryText];
-    return followsYou ? [UIColor colorWithRed:0.30 green:0.75 blue:0.40 alpha:1.0]
-                      : [UIColor colorWithRed:0.85 green:0.30 blue:0.30 alpha:1.0];
+    return followsYou ? [UIColor colorWithRed:0.20 green:0.75 blue:0.35 alpha:1.0]
+                      : [UIColor colorWithRed:0.90 green:0.25 blue:0.25 alpha:1.0];
 }
 
 // Follow status is fetched once per profile PK and memoised globally, so
@@ -175,7 +176,7 @@ static void SPKRenderFollowBadge(UIViewController *controller, UIView *container
 
     NSString *text = nil;
     if (SPKFollowIndicatorShowsText())
-        text = followsYou ? @"FOLLOWING YOU" : @"NOT FOLLOWING YOU";
+        text = followsYou ? @"Follows you 😊" : @"Doesn't follow you 😔";
 
     if (!icon && text.length == 0)
         return;
@@ -280,6 +281,9 @@ static void SPKRefreshFollowIndicator(UIViewController *controller) {
         return;
     }
 
+    // Nudge immediately to clear any stale badge from view recycling while fetch is in progress
+    SPKNudgeFollowIndicator(controller);
+
     if (![SPKGetFollowFetchPK(controller) isEqualToString:profilePK])
         SPKFetchFollowStatus(controller, profilePK);
 }
@@ -331,9 +335,6 @@ static void SPKRefreshFollowIndicator(UIViewController *controller) {
 %end
 
 void SPKInstallFollowIndicatorHooksIfEnabled(void) {
-    if (!SPKFollowIndicatorEnabled())
-        return;
-
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         %init(SPKFollowIndicatorHooks);
