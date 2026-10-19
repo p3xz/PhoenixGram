@@ -235,7 +235,16 @@ static void SPKFetchFollowStatus(UIViewController *controller, NSString *profile
                                             ![SPKGetFollowProfilePK(strongController) isEqualToString:requestedPK])
                                             return;
 
-                                        NSNumber *followsYou = @([response[@"followed_by"] boolValue]);
+                                        NSNumber *followsYou = nil;
+                                        id followedBy = response[@"followed_by"];
+                                        if ([followedBy isKindOfClass:[NSNumber class]]) {
+                                            followsYou = @([followedBy boolValue]);
+                                        }
+                                        if (!followsYou) {
+                                            // Unknown status (null/missing): leave the badge hidden
+                                            // and don't cache a wrong answer.
+                                            return;
+                                        }
                                         SPKFollowStatusCache()[requestedPK] = followsYou;
                                         SPKSetFollowStatus(strongController, followsYou);
                                         SPKNudgeFollowIndicator(strongController);
