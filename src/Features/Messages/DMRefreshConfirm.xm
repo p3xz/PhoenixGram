@@ -93,8 +93,9 @@ static IGRefreshControl *SPKDMFindIGRefreshControl(id self, id arg) {
     // Try the view controller's own ivar. The legacy ObjC inbox VC names it _refreshControl;
     // the Swift rewrite (IG 440) names it refreshControl, with no underscore.
     if ([self isKindOfClass:[UIViewController class]]) {
-        for (const char *ivarName : { "_refreshControl", "refreshControl" }) {
-            Ivar ivar = class_getInstanceVariable([self class], ivarName);
+        static const char *ivarNames[] = { "_refreshControl", "refreshControl" };
+        for (size_t i = 0; i < sizeof(ivarNames) / sizeof(ivarNames[0]); i++) {
+            Ivar ivar = class_getInstanceVariable([self class], ivarNames[i]);
             if (!ivar)
                 continue;
             id control = object_getIvar(self, ivar);
